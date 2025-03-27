@@ -140,8 +140,8 @@ def write_file(country_city, output_file_name):
             """
             line = [str(id), str(id), str(get_age()), get_gender(), get_orientation()]
             cv = country_city.pop()
-            if cv is None:
-                continue
+
+            # TODO: SOMEHOW THESE CV STRINGS HAVE "" WITH THEM
             line.append(cv[0])
             line.append(cv[1])
             line = line + [str(get_taille()), str(get_poids())]
