@@ -14,6 +14,7 @@ bio (jsp quoi mettre)
 """
 import sys
 from random import choice, randint
+import csv
 
 
 def get_random_from_list(liste, n):
@@ -57,13 +58,12 @@ def get_country_city(filename, n):
     whole_file = []
 
     f = open(filename, 'r', encoding='utf-8')
-    lines = f.readlines()
-    lines.pop(0)
+    reader = csv.reader(f)
+    next(reader)
     # Get the whole file in the
-    for line in lines:
-        line_format = line.split(',')
-        country = line_format[4].strip()
-        city = line_format[1].strip()
+    for line in reader:
+        country = line[4].strip()
+        city = line[1].strip()
         whole_file.append((country, city))
 
     f.close()
@@ -80,15 +80,15 @@ def get_bio():
 
 
 def get_poids():
-    return randint(50, 150)
+    return str(randint(50, 150))
 
 
 def get_taille():
-    return randint(140, 210)
+    return str(randint(140, 210))
 
 
 def get_age():
-    return randint(18, 40)
+    return str(randint(18, 40))
 
 
 def get_gender():
@@ -104,6 +104,17 @@ def get_orientation():
             return res[i]
 
     return "Hetero"
+
+
+def get_with_proba(func, proba, maxi):
+    if randint(1, maxi) <= proba:
+        return "," + func()
+    return ","
+
+
+def get_couple_cc(liste):
+    els = liste.pop()
+    return "," + els[0].strip() + "," + els[1].strip()
 
 
 """
@@ -123,27 +134,27 @@ bio (jsp quoi mettre)
 
 def write_file(country_city, output_file_name):
     with open(output_file_name, 'w', encoding='utf-8') as f:
-        id = 1
+        funcs = [get_age, get_gender, get_orientation, get_couple_cc, get_taille, get_poids, get_bio]
+        params = [None, None, None, country_city, None, None, None]
+        percs = [(8, 10), (1, 1), (1, 1), (1, 1), (1, 1)]
         while len(country_city) > 0:
             """
-            id
-            user_id
-            age = get_age()
+            age = get_age() # NULLABLE
             gender = get_gender()
             orientation = get_orientation()
             cv = country_city.pop()
             country = cv[0]
             city = cv[1]
-            taille = get_taille()
-            poids = get_poids()
-            bio = get_bio()
+            taille = get_taille() # NULLABLE
+            poids = get_poids()  # NULLABLE
+            bio = get_bio() # NULLABLE
             """
-            line = [str(id), str(id), str(get_age()), get_gender(), get_orientation()]
+            line = [get_age(), get_gender(), get_orientation(), get_couple_cc()]
+
             cv = country_city.pop()
 
-            # TODO: SOMEHOW THESE CV STRINGS HAVE "" WITH THEM
-            line.append(cv[0])
-            line.append(cv[1])
+            line.append(cv[0].strip())
+            line.append(cv[1].strip())
             line = line + [str(get_taille()), str(get_poids())]
 
             line = ','.join(line)
@@ -156,7 +167,6 @@ def write_file(country_city, output_file_name):
             line = line + "\n"
 
             f.write(line)
-            id += 1
 
 
 if __name__ == '__main__':
