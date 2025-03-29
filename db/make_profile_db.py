@@ -71,7 +71,7 @@ def get_country_city(filename, n):
     return get_random_from_list(whole_file, n)
 
 
-def get_bio():
+def get_bio(_unused):
     length = randint(16, 64)
     res = ""
     for i in range(length):
@@ -79,23 +79,23 @@ def get_bio():
     return res
 
 
-def get_poids():
+def get_poids(_unused):
     return str(randint(50, 150))
 
 
-def get_taille():
+def get_taille(_unused):
     return str(randint(140, 210))
 
 
-def get_age():
+def get_age(_unused):
     return str(randint(18, 40))
 
 
-def get_gender():
+def get_gender(_unused):
     return choice(['male', 'female'])
 
 
-def get_orientation():
+def get_orientation(_unused):
     num = randint(1, 100)
     percs = [90, 95, 100]
     res = ["heterosexual", "homosexual", "bisexual"]
@@ -106,37 +106,22 @@ def get_orientation():
     return "Hetero"
 
 
-def get_with_proba(func, proba, maxi):
+def get_with_proba(string, proba, maxi):
     if randint(1, maxi) <= proba:
-        return "," + func()
+        return "," + string
     return ","
 
 
 def get_couple_cc(liste):
     els = liste.pop()
-    return "," + els[0].strip() + "," + els[1].strip()
-
-
-"""
-Profil:
-id (pour numerer, ignorable)
-#utilisateur_id (random?)
-age
-genre (sex?)
-orientation (jsp quoi mettre)
-ville
-pays
-taille (140-210)
-poids (50-150)
-bio (jsp quoi mettre)
-"""
+    return els[0].strip() + "," + els[1].strip()
 
 
 def write_file(country_city, output_file_name):
     with open(output_file_name, 'w', encoding='utf-8') as f:
         funcs = [get_age, get_gender, get_orientation, get_couple_cc, get_taille, get_poids, get_bio]
         params = [None, None, None, country_city, None, None, None]
-        percs = [(8, 10), (1, 1), (1, 1), (1, 1), (1, 1)]
+        percs = [(8, 10), (1, 1), (1, 1), (1, 1), (8, 10), (8, 10), (7, 10)]
         while len(country_city) > 0:
             """
             age = get_age() # NULLABLE
@@ -149,22 +134,13 @@ def write_file(country_city, output_file_name):
             poids = get_poids()  # NULLABLE
             bio = get_bio() # NULLABLE
             """
-            line = [get_age(), get_gender(), get_orientation(), get_couple_cc()]
+            line = ""
 
-            cv = country_city.pop()
+            for i in range(len(funcs)):
+                line += get_with_proba(funcs[i](params[i]), percs[i][0], percs[i][1])
 
-            line.append(cv[0].strip())
-            line.append(cv[1].strip())
-            line = line + [str(get_taille()), str(get_poids())]
-
-            line = ','.join(line)
-
-            line = line + ","
-
-            if randint(0, 10) < 7:
-                line = line + get_bio()
-
-            line = line + "\n"
+            # Get rid of the first "," and add \n to the end
+            line = line[1:] + "\n"
 
             f.write(line)
 
@@ -185,8 +161,6 @@ if __name__ == '__main__':
     # Get output file name
     output_file_name = sys.argv[2]
 
-    # Get the nickname list
-    #nicknames = get_nickname("nickname/hypixel-players.txt", num)
     country_city = get_country_city("country_city/worldcities.csv", num)
 
     write_file(country_city, output_file_name)
