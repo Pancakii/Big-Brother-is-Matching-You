@@ -31,23 +31,6 @@ def get_random_from_list(liste, n):
     return res
 
 
-def get_nickname(filename, n):
-    """
-    Get random nicknames in a list from filename
-    :param filename: file name
-    :param n: number of nicknames
-    :return: list of nicknames
-    """
-
-    nicknames = []
-    with open(filename, 'r') as f:
-        for line in f:
-            line = line.strip()
-            nicknames.append(line)
-
-    return get_random_from_list(nicknames, n)
-
-
 def get_country_city(filename, n):
     """
     Get country and city in a list from filename
@@ -150,7 +133,7 @@ def write_file(cc, output_f, is_production=False):
 if __name__ == '__main__':
     # Check the arguments
     if len(sys.argv) != 3 and len(sys.argv) != 4:
-        print('Usage: %s <length of the database> <output file name> <is for production=1(1 = yes, 0 = no)>' % sys.argv[
+        print('Usage: %s <length of the database> <output file name> <is for production=0(1 = yes, 0 = no)>' % sys.argv[
             0])
         sys.exit(1)
 
