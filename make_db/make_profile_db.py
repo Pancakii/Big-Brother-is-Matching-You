@@ -117,7 +117,7 @@ def get_couple_cc(liste):
     return els[0].strip() + "," + els[1].strip()
 
 
-def write_file(cc, output_f, is_production = False):
+def write_file(cc, output_f, is_production=False):
     if is_production:
         output_f = r"../DB/" + output_f
     with open(output_f, 'w', encoding='utf-8') as f:
@@ -150,7 +150,8 @@ def write_file(cc, output_f, is_production = False):
 if __name__ == '__main__':
     # Check the arguments
     if len(sys.argv) != 3 and len(sys.argv) != 4:
-        print('Usage: %s <length of the database> <output file name> <is for production=1(1 = yes, 0 = no)>' % sys.argv[0])
+        print('Usage: %s <length of the database> <output file name> <is for production=1(1 = yes, 0 = no)>' % sys.argv[
+            0])
         sys.exit(1)
 
     # Get the length of the database
@@ -163,7 +164,6 @@ if __name__ == '__main__':
     except ValueError:
         print('Usage: %s <length of the database> <output file name> <is for production=0(1 = yes, 0 = no)>' % sys.argv[0])
         sys.exit(1)
-
 
     # Get output file name
     output_file_name = sys.argv[2]
