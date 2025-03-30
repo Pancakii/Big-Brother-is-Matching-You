@@ -90,8 +90,8 @@ CREATE TABLE Abonnement (
 
 CREATE TABLE Likes (
     id SERIAL PRIMARY KEY,
-    utilisateur_id_1 INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
-    utilisateur_id_2 INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    profil_id INTEGER REFERENCES profil(id) ON DELETE CASCADE,
     type_interaction VARCHAR(10) CHECK (type_interaction IN ('like', 'nope')),
     date_interaction TIMESTAMP NOT NULL
 );
