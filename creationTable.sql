@@ -1,95 +1,104 @@
 CREATE TABLE Utilisateur (
-    id  SERIAL PRIMARY KEY,
-    nom VARCHAR(50) UNIQUE NOT NULL,
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(50) NOT NULL,
+    prenom VARCHAR(50) NOT NULL,
     email VARCHAR(250) UNIQUE NOT NULL,
-    date_inscription TIMESTAMP NOT NOT,
+    date_inscription TIMESTAMP NOT NULL,
     statut BOOLEAN DEFAULT TRUE,
     mot_de_passe TEXT NOT NULL,
     premium BOOLEAN DEFAULT FALSE
-
 );
 
-CREATE TABLE Trace_numerique (
+CREATE TABLE Trace_Numerique (
     id SERIAL PRIMARY KEY,
-    utilisateur_id INTEGER REFERENCES Utilisateur(id),
+    utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
     type_action VARCHAR(100) NOT NULL,
-    source VARCHAR(100) NOT NULL,
+    source VARCHAR(100) NOT NULL, 
+    url TEXT,
     horodatage TIMESTAMP NOT NULL
-
 );
 
 CREATE TABLE Profil (
     id SERIAL PRIMARY KEY,
     utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
-    pseudo  VARCHAR(50) NOT NULL,
+    pseudo VARCHAR(50) NOT NULL,
     age INTEGER CHECK (age >= 18),
     genre VARCHAR(50) NOT NULL,
     orientation VARCHAR(50) NOT NULL,
     ville VARCHAR(100) NOT NULL,
     pays VARCHAR(100) NOT NULL,
-    taille NUMERIC(3,1) CHECK (taille >0),
-    poids NUMERIC(5,2) CHECK (poids >0),
+    taille NUMERIC(3,1) CHECK (taille > 0),
+    poids NUMERIC(5,2) CHECK (poids > 30),
     bio TEXT
-
 );
 
 CREATE TABLE Match (
-    id SERIAL PRIMARY KEY
+    id SERIAL PRIMARY KEY,
     utilisateur_id_1 INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
     utilisateur_id_2 INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
     date_match TIMESTAMP NOT NULL,
-    CHECK (utilisateur_id_1 <> utilisateur_id_2);
-
-
+    CHECK (utilisateur_id_1 <> utilisateur_id_2)
 );
 
-CREATE TABLE Message(
+CREATE TABLE Message (
     id SERIAL PRIMARY KEY,
     match_id INTEGER REFERENCES Match(id) ON DELETE CASCADE,
     auteur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
     contenu TEXT NOT NULL,
-    horodatage TIMESTAMP NOT NULL
-
+    horodatage TIMESTAMP NOT NULL 
 );
 
-CREATE TABLE Evenement(
-    id SERIAL PRIMARY KEY
+CREATE TABLE Evenement (
+    id SERIAL PRIMARY KEY,
     organisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE SET NULL,
     titre VARCHAR(255) NOT NULL,
     type_evenement VARCHAR(255) NOT NULL,
     description TEXT,
     lieu VARCHAR(255) NOT NULL,
-    date_heure TIMESTAMP NOT NULL,
+    date_heure TIMESTAMP NOT NULL ,
     prix NUMERIC(6,2) CHECK (prix >= 0)
 );
 
-CREATE TABLE Participation(
+CREATE TABLE Participation (
     id SERIAL PRIMARY KEY,
     utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
     evenement_id INTEGER REFERENCES Evenement(id) ON DELETE CASCADE,
     statut VARCHAR(10) CHECK (statut IN ('intéressé','participant'))
-
 );
 
+CREATE TABLE Presence_Evenement (
+    id SERIAL PRIMARY KEY,
+    utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    evenement_id INTEGER REFERENCES Evenement(id) ON DELETE CASCADE
+);
 
-CREATE TABLE Tag(
-    id PRIMARY KEY,
+CREATE TABLE Historique_Consultation (
+    id SERIAL PRIMARY KEY,
+    utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    type_contenu VARCHAR(50) CHECK (type_contenu IN ('evenement', 'match', 'utilisateur')),
+    contenu_id INTEGER NOT NULL,
+    date_consultation TIMESTAMP NOT NULL
+);
+
+CREATE TABLE Tag (
+    id SERIAL PRIMARY KEY,
     nom VARCHAR(50) UNIQUE NOT NULL
-
 );
 
-CREATE TABLE Tag_evenement(
+CREATE TABLE Tag_evenement (
     evenement_id INTEGER REFERENCES Evenement(id) ON DELETE CASCADE,
     tag_id INTEGER REFERENCES Tag(id) ON DELETE CASCADE,
-    PRIMARY KEY(evenement_id,tag_id)
-
+    PRIMARY KEY (evenement_id, tag_id)
 );
 
-
-CREATE TABLE Tag_utilisateur(
+CREATE TABLE Tag_utilisateur (
     utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
     tag_id INTEGER REFERENCES Tag(id) ON DELETE CASCADE,
-    PRIMARY KEY(utilisateur_id,tag_id)
-    
+    PRIMARY KEY (utilisateur_id, tag_id)
 );
 
+CREATE TABLE Tag_trace_numerique (
+    utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    tag_id INTEGER REFERENCES Tag(id) ON DELETE CASCADE,
+    PRIMARY KEY (utilisateur_id, tag_id)
+)
