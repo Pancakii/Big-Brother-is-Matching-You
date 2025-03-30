@@ -23,8 +23,8 @@ CREATE TABLE Profil (
     utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
     pseudo VARCHAR(50) NOT NULL,
     age INTEGER CHECK (age >= 18),
-    genre VARCHAR(50) NOT NULL,
-    orientation VARCHAR(50) NOT NULL,
+    genre VARCHAR(50) CHECK(genre IN ('H','F','Autre')),
+    orientation VARCHAR(50) CHECK(orientation IN ('H','F','Autre')),
     ville VARCHAR(100) NOT NULL,
     pays VARCHAR(100) NOT NULL,
     taille NUMERIC(3,1) CHECK (taille > 0),
@@ -80,6 +80,23 @@ CREATE TABLE Historique_Consultation (
     date_consultation TIMESTAMP NOT NULL
 );
 
+CREATE TABLE Abonnement (
+    id SERIAL PRIMARY KEY,
+    utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    type_abonnement VARCHAR(50) CHECK (type_abonnement IN ('standard', 'premium')),
+    date_debut TIMESTAMP NOT NULL,
+    date_fin TIMESTAMP NOT NULL,
+);
+
+CREATE TABLE Likes (
+    id SERIAL PRIMARY KEY,
+    utilisateur_id_1 INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    utilisateur_id_2 INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    type_interaction VARCHAR(10) CHECK (type_interaction IN ('like', 'nope')),
+    date_interaction TIMESTAMP NOT NULL
+);
+
+
 CREATE TABLE Tag (
     id SERIAL PRIMARY KEY,
     nom VARCHAR(50) UNIQUE NOT NULL
@@ -97,8 +114,9 @@ CREATE TABLE Tag_utilisateur (
     PRIMARY KEY (utilisateur_id, tag_id)
 );
 
-CREATE TABLE Tag_trace_numerique (
-    utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
+CREATE TABLE Tag_Trace_Numerique (
+    trace_id INTEGER REFERENCES Trace_Numerique(id) ON DELETE CASCADE,
     tag_id INTEGER REFERENCES Tag(id) ON DELETE CASCADE,
-    PRIMARY KEY (utilisateur_id, tag_id)
-)
+    PRIMARY KEY (trace_id, tag_id)
+);
+
