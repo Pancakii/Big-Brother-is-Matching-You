@@ -1,0 +1,184 @@
+#!/usr/bin/env python3
+import csv
+import os
+from random import randint, choice
+import sys
+
+
+class Person:
+    total = 0
+    files = []
+    pseudos = []
+
+    def __init__(self):
+        # utilisateur
+        self.nom = ""
+        self.prenom = ""
+        self.email = ""
+        self.date_inscription = ""
+        self.statut = choice([True, False])
+        self.mot_de_passe = ""
+        self.premium = choice([True, False])
+
+        # profil
+        self.pseudo = ""
+        self.age = ""
+        self.genre = ""
+        self.orientation = ""
+        self.ville = ""
+        self.pays = ""
+        self.taille = ""
+        self.poids = ""
+        self.bio = ""
+
+        if self.init_person():
+            Person.total += 1
+
+    def init_person(self):
+        while len(Person.files) > 0:
+            if len(Person.files[0]) == 0:
+                Person.files.pop(0)
+                continue
+            # to fix: pseudo, orientation and maybe bio
+            # prenom,nom,email,date_inscription,status,mot_de_passe,premium,pseudo,age,gender,orientation,ville,pays,taille,poids,bio
+            whole_data = Person.files[0].pop(0)
+            [self.prenom, self.nom, self.email, self.date_inscription,
+             self.statut, self.mot_de_passe, self.premium,
+             self.pseudo, self.age, self.genre,
+             self.orientation, self.ville, self.pays,
+             self.taille, self.poids, self.bio] = whole_data
+            self.get_pseudo()
+            self.get_orientation()
+            self.get_bio()
+
+            self.genre = self.genre.lower()
+
+            return True
+        print("Error while initializing person: Not enough data.")
+        return False
+
+    def get_pseudo(self):
+        if len(Person.pseudos) == 0:
+            print("No pseudos left")
+        else:
+            self.pseudo = Person.pseudos.pop(randint(0, len(Person.pseudos) - 1))
+
+    def get_orientation(self):
+        num = randint(1, 100)
+        percs = [80, 90, 100]
+        res = ["heterosexual", "homosexual", "bisexual"]
+        for i in range(len(percs)):
+            if num <= percs[i]:
+                self.orientation = res[i]
+                return
+
+        self.orientation = "Hetero"
+
+    def get_bio(self):
+        length = randint(32, 64)
+        self.bio = ""
+        for i in range(length):
+            self.bio += chr(randint(97, 122))
+
+    def get_user_str(self):
+        res = ','.join([self.nom, self.prenom, self.email,
+                        self.date_inscription, str(self.statut),
+                        self.mot_de_passe, str(self.premium)])
+        """
+        # utilisateur
+        self.nom = ""
+        self.prenom = ""
+        self.email = ""
+        self.date_inscription = ""
+        self.statut = choice([True, False])
+        self.mot_de_passe = ""
+        self.premium = choice([True, False])
+        """
+        return res + "\n"
+
+    def get_profile_str(self):
+        res = ','.join([self.pseudo, str(self.age), self.genre,
+                        self.orientation, self.ville, self.pays,
+                        str(self.taille), str(self.poids), self.bio])
+        """
+        # profil
+        self.pseudo = ""
+        self.age = 0
+        self.genre = ""
+        self.orientation = ""
+        self.ville = ""
+        self.pays = ""
+        self.taille = 140
+        self.poids = 50
+        self.bio = ""
+        """
+        return res + "\n"
+
+    @staticmethod
+    def get_pseudos():
+        """
+        Get nicknames in a list for pseudos
+        :return: nothing
+        """
+
+        res = []
+        with open("nickname/hypixel-players.txt", 'r') as f:
+            for line in f:
+                line = line.strip()
+                res.append(line)
+
+        Person.pseudos = res
+
+    @staticmethod
+    def get_files():
+        liste = os.listdir("mock_data")
+        for file in liste:
+            if file.endswith(".csv"):
+                try:
+                    Person.files.append([])
+                    f = open("mock_data/" + file, 'r', encoding='utf-8')
+                    reader = csv.reader(f)
+                    next(reader)
+                    # Get the whole file in the list
+                    for line in reader:
+                        Person.files[-1].append(line)
+                    f.close()
+                except Exception as e:
+                    print(f"Passing file {file}. " + str(e))
+
+    @staticmethod
+    def make_db(length):
+        """
+        Makes Utilisateur and Profil db
+        :return: nothing
+        """
+        Person.get_files()
+        Person.get_pseudos()
+        uf = open("../DB/utilisateur.csv", 'w', encoding='utf-8')
+        pf = open("../DB/profile.csv", 'w', encoding='utf-8')
+        counter = 0
+        while Person.total < length:
+            person = Person()
+            if person.nom == "":
+                print(f"Somehow Person nom is empty. Stopping generating. People made: {Person.total}")
+                break
+            uf.write(person.get_user_str())
+            pf.write(person.get_profile_str())
+            counter += 1
+
+        print(f"Counter: {counter}, Total people: {Person.total}")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print('Usage: %s <length of the database>' % sys.argv[0])
+        sys.exit(1)
+
+    # Get the length of the database
+    try:
+        num = int(sys.argv[1])
+    except ValueError:
+        print('Usage: %s <length of the database>' % sys.argv[0])
+        sys.exit(1)
+    Person.make_db(num)
+    print("Done")
