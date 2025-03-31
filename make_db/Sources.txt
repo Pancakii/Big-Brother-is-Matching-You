@@ -2,3 +2,5 @@ baby-names.csv -> https://github.com/hadley/data-baby-names/blob/master/baby-nam
 surnames.csv -> https://github.com/fivethirtyeight/data/blob/master/most-common-name/surnames.csv
 hypixel-players.txt -> https://github.com/FlorianCassayre/nicknames-datasets/blob/master/hypixel-players
 worldcities.csv -> https://simplemaps.com/data/world-cities
+
+mock_data -> https://www.mockaroo.com/
