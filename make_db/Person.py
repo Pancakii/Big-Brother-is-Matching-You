@@ -40,13 +40,17 @@ class Person:
                 Person.files.pop(0)
                 continue
             # to fix: pseudo, orientation and maybe bio
-            # prenom,nom,email,status,mot_de_passe,premium,pseudo,age,gender,orientation,ville,pays,taille,poids,bio
+            # prenom,nom,email,date_inscription,status,mot_de_passe,premium,pseudo,age,gender,orientation,ville,pays,taille,poids,bio
             whole_data = Person.files[0].pop(0)
-            [self.prenom, self.nom, self.email,
+            [self.prenom, self.nom, self.email, self.date_inscription,
              self.statut, self.mot_de_passe, self.premium,
              self.pseudo, self.age, self.genre,
              self.orientation, self.ville, self.pays,
              self.taille, self.poids, self.bio] = whole_data
+            self.get_pseudo()
+            self.get_orientation()
+            self.get_bio()
+
             return True
         print("Error while initializing person: Not enough data.")
         return False
@@ -109,21 +113,17 @@ class Person:
         return res + "\n"
 
     @staticmethod
-    def get_pseudos(length):
+    def get_pseudos():
         """
         Get nicknames in a list for pseudos
-        :param length: length of nicknames wanted
         :return: nothing
         """
 
         res = []
         with open("nickname/hypixel-players.txt", 'r') as f:
             for line in f:
-                if length <= 0:
-                    break
                 line = line.strip()
                 res.append(line)
-                length -= 1
 
         Person.pseudos = res
 
@@ -134,7 +134,7 @@ class Person:
             if file.endswith(".csv"):
                 try:
                     Person.files.append([])
-                    f = open(file, 'r', encoding='utf-8')
+                    f = open("mock_data/" + file, 'r', encoding='utf-8')
                     reader = csv.reader(f)
                     next(reader)
                     # Get the whole file in the list
@@ -151,9 +151,9 @@ class Person:
         :return: nothing
         """
         Person.get_files()
-        Person.get_pseudos(length)
-        uf = open("utilisateur.csv", 'w', encoding='utf-8')
-        pf = open("profile.csv", 'w', encoding='utf-8')
+        Person.get_pseudos()
+        uf = open("../DB/utilisateur.csv", 'w', encoding='utf-8')
+        pf = open("../DB/profile.csv", 'w', encoding='utf-8')
         counter = 0
         while Person.total < length:
             person = Person()
