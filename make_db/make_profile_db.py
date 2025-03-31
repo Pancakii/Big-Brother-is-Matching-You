@@ -100,14 +100,16 @@ def get_couple_cc(liste):
     return els[0].strip() + "," + els[1].strip()
 
 
-def write_file(cc, output_f, is_production=False):
+def write_profile_file(length, output_f, is_production=False):
     if is_production:
         output_f = r"../DB/" + output_f
     with open(output_f, 'w', encoding='utf-8') as f:
+        country_city = get_country_city("country_city/worldcities.csv", length)
+
         funcs = [get_age, get_gender, get_orientation, get_couple_cc, get_taille, get_poids, get_bio]
-        params = [None, None, None, cc, None, None, None]
+        params = [None, None, None, length, None, None, None]
         percs = [(8, 10), (1, 1), (1, 1), (1, 1), (8, 10), (8, 10), (7, 10)]
-        while len(cc) > 0:
+        while len(country_city) > 0:
             """
             age = get_age() # NULLABLE
             gender = get_gender()
@@ -133,8 +135,7 @@ def write_file(cc, output_f, is_production=False):
 if __name__ == '__main__':
     # Check the arguments
     if len(sys.argv) != 3 and len(sys.argv) != 4:
-        print('Usage: %s <length of the database> <output file name> <is for production=0(1 = yes, 0 = no)>' % sys.argv[
-            0])
+        print('Usage: %s <length of the database> <output file name> <is for production=0(1 = yes, 0 = no)>' % sys.argv[0])
         sys.exit(1)
 
     # Get the length of the database
@@ -151,6 +152,4 @@ if __name__ == '__main__':
     # Get output file name
     output_file_name = sys.argv[2]
 
-    country_city = get_country_city("country_city/worldcities.csv", num)
-
-    write_file(country_city, output_file_name, is_production)
+    write_profile_file(num, output_file_name, is_production)

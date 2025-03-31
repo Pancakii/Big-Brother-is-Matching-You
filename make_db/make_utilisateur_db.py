@@ -28,6 +28,9 @@ def get_nicknames(filename, length):
     :return: list of nicknames
     """
 
+    # TODO: this thing, get random interval from the file
+    limits = 0
+
     res = []
     with open(filename, 'r') as f:
         for line in f:
@@ -80,7 +83,14 @@ def get_with_proba(string, proba, maxi):
     return ","
 
 
-def write_file(length, output_f, is_pd=False):
+def write_utilisateur_file(length, output_f, is_pd=False):
+    """
+    Write utilisateur file
+    :param length: length of the file/ number of users
+    :param output_f: name of the output file
+    :param is_pd: is for production or not. If so, save it in the BD folder
+    :return: nothing
+    """
     if is_pd:
         output_f = r"../DB/" + output_f
     with open(output_f, 'w', encoding='utf-8') as f:
@@ -129,4 +139,4 @@ if __name__ == '__main__':
     # Get output file name
     output_file_name = sys.argv[2]
 
-    write_file(num, output_file_name, is_production)
+    write_utilisateur_file(num, output_file_name, is_production)
