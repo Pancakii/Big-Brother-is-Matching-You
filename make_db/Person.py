@@ -22,13 +22,13 @@ class Person:
 
         # profil
         self.pseudo = ""
-        self.age = 0
+        self.age = ""
         self.genre = ""
         self.orientation = ""
         self.ville = ""
         self.pays = ""
-        self.taille = 140
-        self.poids = 50
+        self.taille = ""
+        self.poids = ""
         self.bio = ""
 
         if self.init_person():
@@ -50,6 +50,8 @@ class Person:
             self.get_pseudo()
             self.get_orientation()
             self.get_bio()
+
+            self.genre = self.genre.lower()
 
             return True
         print("Error while initializing person: Not enough data.")
