@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
 import csv
 import os
 from random import randint, choice
+import sys
 
 
 class Person:
@@ -166,5 +168,15 @@ class Person:
 
 
 if __name__ == "__main__":
-    Person.make_db(2500)
+    if len(sys.argv) != 2:
+        print('Usage: %s <length of the database>' % sys.argv[0])
+        sys.exit(1)
+
+    # Get the length of the database
+    try:
+        num = int(sys.argv[1])
+    except ValueError:
+        print('Usage: %s <length of the database>' % sys.argv[0])
+        sys.exit(1)
+    Person.make_db(num)
     print("Done")
