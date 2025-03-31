@@ -53,7 +53,7 @@ class Person:
         if len(Person.pseudos) == 0:
             print("No pseudos left")
         else:
-            self.pseudo = Person.pseudos.pop(randint(0, len(self.pseudos) - 1))
+            self.pseudo = Person.pseudos.pop(randint(0, len(Person.pseudos) - 1))
 
     def get_orientation(self):
         num = randint(1, 100)
@@ -81,16 +81,30 @@ class Person:
         self.nom = ""
         self.prenom = ""
         self.email = ""
-        self.date_inscription = []
+        self.date_inscription = ""
         self.statut = choice([True, False])
         self.mot_de_passe = ""
         self.premium = choice([True, False])
         """
-        return res
+        return res + "\n"
 
     def get_profile_str(self):
-        return
-
+        res = ','.join([self.pseudo, str(self.age), self.genre,
+                        self.orientation, self.ville, self.pays,
+                        str(self.taille), str(self.poids), self.bio])
+        """
+        # profil
+        self.pseudo = ""
+        self.age = 0
+        self.genre = ""
+        self.orientation = ""
+        self.ville = ""
+        self.pays = ""
+        self.taille = 140
+        self.poids = 50
+        self.bio = ""
+        """
+        return res + "\n"
 
     @staticmethod
     def get_pseudos(length):
@@ -138,13 +152,19 @@ class Person:
         Person.get_pseudos(length)
         uf = open("utilisateur.csv", 'w', encoding='utf-8')
         pf = open("profile.csv", 'w', encoding='utf-8')
+        counter = 0
         while Person.total < length:
             person = Person()
             if person.nom == "":
                 print(f"Somehow Person nom is empty. Stopping generating. People made: {Person.total}")
                 break
+            uf.write(person.get_user_str())
+            pf.write(person.get_profile_str())
+            counter += 1
 
+        print(f"Counter: {counter}, Total people: {Person.total}")
 
 
 if __name__ == "__main__":
+    Person.make_db(2500)
     print("Done")
