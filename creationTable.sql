@@ -45,7 +45,8 @@ CREATE TABLE Message (
     match_id INTEGER REFERENCES Match(id) ON DELETE CASCADE,
     auteur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
     contenu TEXT NOT NULL,
-    horodatage TIMESTAMP NOT NULL 
+    horodatage TIMESTAMP NOT NULL,
+    supprimer BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE Evenement (
@@ -93,7 +94,8 @@ CREATE TABLE Likes (
     utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
     profil_id INTEGER REFERENCES profil(id) ON DELETE CASCADE,
     type_interaction VARCHAR(10) CHECK (type_interaction IN ('like', 'nope')),
-    date_interaction TIMESTAMP NOT NULL
+    date_interaction TIMESTAMP NOT NULL,
+    annuler BOOLEAN DEFAULT FALSE   
 );
 
 
@@ -120,3 +122,40 @@ CREATE TABLE Tag_Trace_Numerique (
     PRIMARY KEY (trace_id, tag_id)
 );
 
+CREATE TABLE Notification (
+    id SERIAL PRIMARY KEY,
+    utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    type_notification VARCHAR(100),
+    message TEXT,
+    date_envoi TIMESTAMP NOT NULL,
+    vu BOOLEAN DEFAULT FALSE 
+);
+
+CREATE TABLE Match_Potentiel (
+    id SERIAL PRIMARY KEY,
+    utilisateur_id_1 INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    utilisateur_id_2 INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    score_potentiel NUMERIC(5,2) CHECK (score_potentiel >= 0),
+    CHECK (utilisateur_id_1 <> utilisateur_id_2)
+);
+
+CREATE TABLE Historique_Match (
+    match_id INTEGER PRIMARY KEY REFERENCES Match(id) ON DELETE CASCADE,
+    utilisateur_id_1 INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    utilisateur_id_2 INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    date_match TIMESTAMP NOT NULL,
+);
+
+CREATE TABLE Preference_utilisateur (
+    id SERIAL PRIMARY KEY,
+    utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    type_preference VARCHAR(100),
+    valeur_preference VARCHAR(255)
+);
+
+CREATE TABLE Consentement (
+    id SERIAL PRIMARY KEY,
+    utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    type_consentement VARCHAR(100),
+    date_consentement TIMESTAMP NOT NULL
+);
