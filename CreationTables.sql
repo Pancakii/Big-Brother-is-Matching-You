@@ -166,6 +166,6 @@ CREATE TABLE DEMANDE_SUPPRESSION (
     utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
     date_demande TIMESTAMP NOT NULL,
     statut_demande VARCHAR(50) CHECK (statut_demande IN ('en attente', 'acceptée', 'refusée')),
-    type_de_donnees VARCHAR(50) CHECK (type_de_donnees IN ('profil', 'trace_numerique', "historique_match", "historique_consultation", "participation", "presence_evenement", 'tous'))
-    date_acceptation TIMESTAMP 
+    type_de_donnees VARCHAR(50) CHECK (type_de_donnees IN ('profil', 'trace_numerique', "historique_match", "historique_consultation", "participation", "presence_evenement", 'tous')),
+    date_validation TIMESTAMP 
 );
