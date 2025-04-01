@@ -29,7 +29,9 @@ CREATE TABLE Profil (
     pays VARCHAR(100) NOT NULL,
     taille NUMERIC(3,1) CHECK (taille > 0),
     poids NUMERIC(5,2) CHECK (poids > 30),
-    bio TEXT
+    bio TEXT,
+    nombre_enfant INTEGER DEFAULT 0 CHECK (nombre_enfant >= 0),
+    salaire_par_mois NUMERIC(6,2) CHECK (salaire_par_mois >= 0)
 );
 
 CREATE TABLE Match (
