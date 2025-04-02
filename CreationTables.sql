@@ -40,7 +40,9 @@ CREATE TABLE Match (
     id SERIAL PRIMARY KEY,
     utilisateur_id_1 INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
     utilisateur_id_2 INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
-    date_match TIMESTAMP NOT NULL,
+    date_debut TIMESTAMP NOT NULL,
+    date_fin TIMESTAMP,
+    CHECK (date_fin IS NULL OR date_fin > date_debut),
     CHECK (utilisateur_id_1 <> utilisateur_id_2)
 );
 
@@ -143,12 +145,6 @@ CREATE TABLE Match_Potentiel (
     CHECK (utilisateur_id_1 <> utilisateur_id_2)
 );
 
-CREATE TABLE Historique_Match (
-    match_id INTEGER PRIMARY KEY REFERENCES Match(id) ON DELETE CASCADE,
-    utilisateur_id_1 INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
-    utilisateur_id_2 INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
-    date_match TIMESTAMP NOT NULL,
-);
 
 CREATE TABLE Consentement (
     utilisateur_id INTEGER PRIMARY KEY REFERENCES Utilisateur(id) ON DELETE CASCADE,
