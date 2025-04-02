@@ -3,7 +3,7 @@ FROM './DB/utilisateur.csv'
 DELIMITER ','
 CSV HEADER;
 
-COPY Profil(utilisateur_id, pseudo, age, genre, orientation, ville, pays, taille, poids, bio)
+COPY Profil(utilisateur_id, pseudo, age, genre, orientation, ville, pays, taille, poids, bio,nombre_enfant,salaire_par_mois)
 FROM './DB/profil.csv'
 DELIMITER ','
 CSV HEADER;

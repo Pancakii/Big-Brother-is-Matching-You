@@ -29,7 +29,9 @@ CREATE TABLE Profil (
     pays VARCHAR(100) NOT NULL,
     taille NUMERIC(3,1) CHECK (taille > 0),
     poids NUMERIC(5,2) CHECK (poids > 30),
-    bio TEXT
+    bio TEXT,
+    nombre_enfant INTEGER DEFAULT 0 CHECK (nombre_enfant >= 0),
+    salaire_par_mois NUMERIC(6,2) CHECK (salaire_par_mois >= 0)
 );
 
 CREATE TABLE Match (
@@ -98,7 +100,6 @@ CREATE TABLE Likes (
     annuler BOOLEAN DEFAULT FALSE   
 );
 
-
 CREATE TABLE Tag (
     id SERIAL PRIMARY KEY,
     nom VARCHAR(50) UNIQUE NOT NULL
@@ -158,4 +159,13 @@ CREATE TABLE Consentement (
     utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
     type_consentement VARCHAR(100),
     date_consentement TIMESTAMP NOT NULL
+);
+
+CREATE TABLE DEMANDE_SUPPRESSION (
+    id SERIAL PRIMARY KEY,
+    utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
+    date_demande TIMESTAMP NOT NULL,
+    statut_demande VARCHAR(50) CHECK (statut_demande IN ('en attente', 'acceptée', 'refusée')),
+    type_de_donnees VARCHAR(50) CHECK (type_de_donnees IN ('profil', 'trace_numerique', "historique_match", "historique_consultation", "participation", "presence_evenement", "message", 'tous')),
+    date_validation TIMESTAMP 
 );
