@@ -67,11 +67,13 @@ CREATE TABLE Participation (
     utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
     evenement_id INTEGER REFERENCES Evenement(id) ON DELETE CASCADE,
     statut VARCHAR(10) CHECK (statut IN ('intéressé','participant'))
+    PRIMARY KEY (utilisateur_id, evenement_id)
 );
 
 CREATE TABLE Presence_Evenement (
     utilisateur_id INTEGER REFERENCES Utilisateur(id) ON DELETE CASCADE,
     evenement_id INTEGER REFERENCES Evenement(id) ON DELETE CASCADE
+    PRIMARY KEY (utilisateur_id, evenement_id)
 );
 
 CREATE TABLE Historique_Consultation (
